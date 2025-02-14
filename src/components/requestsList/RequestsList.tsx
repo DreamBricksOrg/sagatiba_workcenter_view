@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import RequestRow from '../requestRow/RequestRow';
 import { useRequestsListController } from './useRequestsListController';
+import LoadingModal from '../loadingModal/LoadingModal';
 
 const TableHeader: React.FC = () => {
   return (
@@ -53,11 +54,14 @@ const RequestsList: React.FC = () => {
                 key={request.id}
                 request={request}
                 onAcceptClick={controller.handleAcceptClick}
+                disableAccept={!!controller.currentRequest}
               />
             ))}
           </Tbody>
         </Table>
       </TableContainer>
+
+      {controller.loading && <LoadingModal />}
     </Flex>
   );
 };

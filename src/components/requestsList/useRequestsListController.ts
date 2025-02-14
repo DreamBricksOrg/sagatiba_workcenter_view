@@ -14,11 +14,24 @@ const copyToClipboard = async (lyrics: string): Promise<boolean> => {
   }
 };
 
+const mockAcceptRequest = async () => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      const success = Math.random() < 0.5;
+
+      if (success) resolve();
+
+      reject();
+    }, 1000);
+  });
+};
+
 export const useRequestsListController = () => {
   const toast = useToast();
   const [requests, setRequests] = useState<IRequest[]>([]);
   const intervalRef = useRef<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [currentRequest, setCurrentRequest] = useState<IRequest | null>(null);
 
   const handleAcceptClick = async (request: IRequest) => {
     let toastTitle = 'Pedido aceito';
@@ -29,6 +42,9 @@ export const useRequestsListController = () => {
       setLoading(true);
 
       // TODO - Implementar request para aceitar
+      await mockAcceptRequest();
+
+      setCurrentRequest(request);
 
       const copySuccess = await copyToClipboard(request.lyrics);
 
@@ -38,6 +54,7 @@ export const useRequestsListController = () => {
     } catch (error) {
       console.log(error);
       toastTitle = 'Erro ao aceitar pedido';
+      toastMessage = 'Não foi possível aceitar o pedido';
       toastStatus = 'error';
     } finally {
       setLoading(false);
@@ -65,7 +82,7 @@ export const useRequestsListController = () => {
       });
 
       NOTIFICATION_SOUND.play();
-    }, 60 * 1000);
+    }, 30 * 1000);
   };
 
   useEffect(() => {
@@ -78,5 +95,5 @@ export const useRequestsListController = () => {
     };
   }, []);
 
-  return { requests, loading, handleAcceptClick };
+  return { requests, loading, currentRequest, handleAcceptClick };
 };

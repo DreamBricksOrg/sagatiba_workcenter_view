@@ -5,10 +5,15 @@ import { IRequest } from '@/types/IRequest';
 
 interface RequestRowProps {
   request: IRequest;
+  disableAccept: boolean;
   onAcceptClick: (request: IRequest) => void;
 }
 
-const RequestRow: React.FC<RequestRowProps> = ({ request, onAcceptClick }) => {
+const RequestRow: React.FC<RequestRowProps> = ({
+  request,
+  disableAccept,
+  onAcceptClick,
+}) => {
   return (
     <Tr>
       <Td w='100px'>{request.id}</Td>
@@ -30,6 +35,7 @@ const RequestRow: React.FC<RequestRowProps> = ({ request, onAcceptClick }) => {
           size='sm'
           onClick={() => onAcceptClick(request)}
           aria-label={`Aceitar pedido ${request.title}`}
+          disabled={disableAccept}
         >
           Aceitar
         </Button>
