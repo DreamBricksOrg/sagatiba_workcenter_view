@@ -1,5 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 import TopBar from './components/topBar/TopBar';
+import RequestsList from './components/requestsList/RequestsList';
 
 function App() {
   return (
@@ -8,6 +9,8 @@ function App() {
       minH='100dvh'
     >
       <TopBar />
+
+      <RequestsList />
     </Flex>
   );
 }
