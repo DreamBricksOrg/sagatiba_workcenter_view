@@ -9,10 +9,12 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
+import { useApp } from '@/context/AppContext';
 
 const mockLoginRequest = () => {
   return new Promise<void>((resolve, reject) => {
     setTimeout(() => {
+      resolve();
       reject();
     }, 1000);
   });
@@ -20,6 +22,7 @@ const mockLoginRequest = () => {
 
 const Login: React.FC = () => {
   const toast = useToast();
+  const { login } = useApp();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -32,13 +35,18 @@ const Login: React.FC = () => {
 
     try {
       setLoading(true);
+
       await mockLoginRequest();
+
+      login(username);
     } catch (error) {
+      console.log('Erro: ', error);
       let message = 'Ocorreu um erro inesperado';
+
       if (error instanceof Error) {
         message = error.message;
       }
-      console.log('Erro: ', error);
+
       toast({
         title: 'Falha no login',
         description: message,
