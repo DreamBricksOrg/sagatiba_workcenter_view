@@ -1,4 +1,4 @@
-import App from '@/App';
+import Login from '@/pages/login/Login';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
@@ -8,8 +8,13 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route
           index
-          element={<App />}
+          element={<Login />}
         />
+
+        {/* <Route
+          index
+          element={<App />}
+        /> */}
       </Routes>
     </BrowserRouter>
   );

@@ -1,14 +1,17 @@
-import { Button, HStack, Flex } from '@chakra-ui/react';
+import { Button, VStack, Flex, Text } from '@chakra-ui/react';
 
 function App() {
   return (
     <Flex
       direction='column'
       minH='100dvh'
+      justifyContent='center'
+      alignItems='center'
     >
-      <HStack>
+      <VStack>
+        <Text>Usuário</Text>
         <Button>Click me</Button>
-      </HStack>
+      </VStack>
     </Flex>
   );
 }
