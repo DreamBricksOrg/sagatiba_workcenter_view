@@ -65,7 +65,10 @@ const RequestsList: React.FC = () => {
       {controller.loading && <LoadingModal />}
 
       {controller.currentRequest && (
-        <AnswerRequestFomModal request={controller.currentRequest} />
+        <AnswerRequestFomModal
+          request={controller.currentRequest}
+          onRequestEnd={controller.handleCloseRequest}
+        />
       )}
     </Flex>
   );

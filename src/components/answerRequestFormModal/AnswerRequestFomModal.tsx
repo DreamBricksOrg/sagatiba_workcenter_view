@@ -27,6 +27,7 @@ import Timer from '../timer/Timer';
 
 type Props = {
   request: IRequest;
+  onRequestEnd: (requestId: IRequest['id']) => void;
 };
 
 const mockSendResult = () => {
@@ -41,7 +42,7 @@ const mockSendResult = () => {
   });
 };
 
-const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
+const AnswerRequestFomModal: React.FC<Props> = ({ request, onRequestEnd }) => {
   const { onClose } = useDisclosure();
   const toast = useToast();
 
@@ -83,6 +84,8 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
 
       // TODO - Requisição para enviar resultado
       await mockSendResult();
+
+      onRequestEnd(request.id);
     } catch (error) {
       let errorMessage = 'ocorreu uma falha inesperada';
 
@@ -105,6 +108,12 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
         duration: 3000,
       });
     }
+  };
+
+  const handleUserWithTrouble = async () => {
+    // TODO - Request para encerrar chamado por problemas técnicos
+
+    onRequestEnd(request.id);
   };
 
   request.lyrics =
@@ -198,6 +207,7 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
               mt={8}
               mb={4}
               isLoading={loading}
+              disabled={!firstUrl.length || !secondUrl.length}
             >
               Enviar
             </Button>
@@ -212,7 +222,7 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
           <Timer />
 
           <Button
-            onClick={onClose}
+            onClick={handleUserWithTrouble}
             colorScheme='red'
           >
             Estou com problema

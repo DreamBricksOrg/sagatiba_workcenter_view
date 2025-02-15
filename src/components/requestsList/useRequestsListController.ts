@@ -64,6 +64,7 @@ export const useRequestsListController = () => {
         status: toastStatus,
         variant: 'subtle',
         position: 'top-right',
+        duration: 3000,
       });
     }
   };
@@ -85,6 +86,13 @@ export const useRequestsListController = () => {
     }, 30 * 1000);
   };
 
+  const handleCloseRequest = (requestId: IRequest['id']) => {
+    setRequests((oldState) =>
+      oldState.filter((request) => request.id !== requestId)
+    );
+    setCurrentRequest(null);
+  };
+
   useEffect(() => {
     mockNewRequestEvents();
 
@@ -95,5 +103,11 @@ export const useRequestsListController = () => {
     };
   }, []);
 
-  return { requests, loading, currentRequest, handleAcceptClick };
+  return {
+    requests,
+    loading,
+    currentRequest,
+    handleAcceptClick,
+    handleCloseRequest,
+  };
 };
