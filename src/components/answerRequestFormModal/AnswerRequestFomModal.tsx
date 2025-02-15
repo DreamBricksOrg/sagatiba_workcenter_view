@@ -113,6 +113,29 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request, onRequestEnd }) => {
   const handleUserWithTrouble = async () => {
     // TODO - Request para encerrar chamado por problemas técnicos
 
+    toast({
+      title: 'Chamado encerrado',
+      description:
+        'O chamado foi relatado como encerrado devido a problema  técnico',
+      status: 'error',
+      variant: 'subtle',
+      position: 'top-right',
+    });
+
+    onRequestEnd(request.id);
+  };
+
+  const handleTimerExpiry = () => {
+    // TODO - Verificar qual é o comportamento desejado
+
+    toast({
+      title: 'Chamado encerrado',
+      description: 'O chamado foi encerrado por inatividade',
+      status: 'error',
+      variant: 'subtle',
+      position: 'top-right',
+    });
+
     onRequestEnd(request.id);
   };
 
@@ -219,7 +242,7 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request, onRequestEnd }) => {
           bgColor='gray.300'
           justifyContent='space-between'
         >
-          <Timer />
+          <Timer onExpireCb={handleTimerExpiry} />
 
           <Button
             onClick={handleUserWithTrouble}

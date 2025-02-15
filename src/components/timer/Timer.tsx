@@ -7,6 +7,8 @@ type Prop = {
   onExpireCb?: () => void;
 };
 
+const warningAudio = new Audio('./sounds/time_ending_sound.wav');
+
 const Timer: React.FC<Prop> = ({ expiryTimestamp, onExpireCb }) => {
   if (!expiryTimestamp) {
     const timerLimit = new Date();
@@ -27,10 +29,16 @@ const Timer: React.FC<Prop> = ({ expiryTimestamp, onExpireCb }) => {
     const time = new Date();
     time.setSeconds(time.getSeconds() + totalSeconds + 30);
     restart(time);
+    warningAudio.pause();
+    warningAudio.currentTime = 0;
   };
 
   const timerColor = totalSeconds > 30 ? 'blue.900' : 'red';
   const text = `${minutes}:${seconds}`;
+
+  if (totalSeconds === 10) {
+    warningAudio.play();
+  }
 
   return (
     <Box
