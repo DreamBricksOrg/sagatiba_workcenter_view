@@ -53,7 +53,7 @@ const Timer: React.FC<Prop> = ({ expiryTimestamp, onExpireCb }) => {
       <Text
         fontWeight='bold'
         color={timerColor}
-        fontSize='3xl'
+        fontSize={['lg', 'xl', '3xl']}
       >
         Tempo restante:
       </Text>
@@ -61,7 +61,7 @@ const Timer: React.FC<Prop> = ({ expiryTimestamp, onExpireCb }) => {
       <Text
         ml={2}
         fontWeight='bold'
-        fontSize='3xl'
+        fontSize={['lg', 'xl', '3xl']}
         color={timerColor}
       >
         {text}

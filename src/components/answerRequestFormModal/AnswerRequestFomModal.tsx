@@ -17,8 +17,11 @@ import {
   useToast,
   Button,
   ModalFooter,
+  FormControl,
+  FormLabel,
+  Input,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { FormEvent, useState } from 'react';
 import { IoMdCopy } from 'react-icons/io';
 import Timer from '../timer/Timer';
 
@@ -26,9 +29,25 @@ type Props = {
   request: IRequest;
 };
 
+const mockSendResult = () => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      const success = Math.random() < 0.5;
+
+      if (success) resolve();
+
+      reject();
+    }, 1000);
+  });
+};
+
 const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
   const { onClose } = useDisclosure();
   const toast = useToast();
+
+  const [firstUrl, setFirstUrl] = useState('');
+  const [secondUrl, setSecondUrl] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const copyToClipboard = async () => {
     let toastTitle = 'Letra copiada';
@@ -45,6 +64,45 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
         status: toastStatus,
         variant: 'subtle',
         position: 'top-right',
+        duration: 1000,
+      });
+    }
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!firstUrl.length || !secondUrl.length) return;
+
+    let toastTitle = 'Resultado enviado';
+    let toastMessage = 'Chamado concluído com sucesso';
+    let toastStatus: 'error' | 'success' = 'success';
+
+    try {
+      setLoading(true);
+
+      // TODO - Requisição para enviar resultado
+      await mockSendResult();
+    } catch (error) {
+      let errorMessage = 'ocorreu uma falha inesperada';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      toastStatus = 'error';
+      toastTitle = 'Falha ao enviar resposta';
+      toastMessage = `Erro: ${errorMessage}`;
+    } finally {
+      setLoading(false);
+
+      toast({
+        title: toastTitle,
+        description: toastMessage,
+        status: toastStatus,
+        variant: 'subtle',
+        position: 'top-right',
+        duration: 3000,
       });
     }
   };
@@ -67,16 +125,17 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
         <ModalBody>
           <Heading
             size='md'
-            noOfLines={2}
+            noOfLines={1}
             textAlign='center'
           >
             {request.title}
           </Heading>
 
           <Card
-            mt={8}
+            mt={4}
+            mb={8}
             bgColor='gray.100'
-            maxH='xl'
+            maxH='sm'
           >
             <CardHeader pb={0}>
               <HStack>
@@ -107,6 +166,42 @@ const AnswerRequestFomModal: React.FC<Props> = ({ request }) => {
               </Box>
             </CardBody>
           </Card>
+
+          <form onSubmit={handleSubmit}>
+            <FormControl isRequired>
+              <FormLabel>Audio URL 1</FormLabel>
+              <Input
+                placeholder='Informe a URL 1'
+                size='lg'
+                value={firstUrl}
+                onChange={(event) => setFirstUrl(event.currentTarget.value)}
+              />
+            </FormControl>
+
+            <FormControl
+              isRequired
+              mt={6}
+            >
+              <FormLabel>Audio URL 2</FormLabel>
+              <Input
+                placeholder='Informe a URL 2'
+                size='lg'
+                value={secondUrl}
+                onChange={(event) => setSecondUrl(event.currentTarget.value)}
+              />
+            </FormControl>
+
+            <Button
+              type='submit'
+              width='full'
+              colorScheme='teal'
+              mt={8}
+              mb={4}
+              isLoading={loading}
+            >
+              Enviar
+            </Button>
+          </form>
         </ModalBody>
 
         <ModalFooter
