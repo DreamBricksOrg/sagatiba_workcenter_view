@@ -11,6 +11,7 @@ import {
 import RequestRow from '../requestRow/RequestRow';
 import { useRequestsListController } from './useRequestsListController';
 import LoadingModal from '../loadingModal/LoadingModal';
+import AnswerRequestFomModal from '../answerRequestFormModal/AnswerRequestFomModal';
 
 const TableHeader: React.FC = () => {
   return (
@@ -62,6 +63,10 @@ const RequestsList: React.FC = () => {
       </TableContainer>
 
       {controller.loading && <LoadingModal />}
+
+      {controller.currentRequest && (
+        <AnswerRequestFomModal request={controller.currentRequest} />
+      )}
     </Flex>
   );
 };
