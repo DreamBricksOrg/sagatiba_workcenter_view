@@ -32,6 +32,7 @@ export default tseslint.config(
       ],
       'prettier/prettier': 'error',
       'react-refresh/only-export-components': 'off',
+      'react-hooks/exhaustive-deps': 'off',
     },
   }
 );

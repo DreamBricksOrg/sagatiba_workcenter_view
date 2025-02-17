@@ -82,7 +82,9 @@ export const useRequestsListController = () => {
         return [...oldState, newRequest];
       });
 
-      NOTIFICATION_SOUND.play();
+      if (!currentRequest) {
+        NOTIFICATION_SOUND.play();
+      }
     }, 30 * 1000);
   };
 
@@ -101,7 +103,7 @@ export const useRequestsListController = () => {
         clearInterval(intervalRef.current);
       }
     };
-  }, []);
+  }, [currentRequest]);
 
   return {
     requests,
