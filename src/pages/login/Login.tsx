@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -7,58 +7,11 @@ import {
   FormLabel,
   Heading,
   Input,
-  useToast,
 } from '@chakra-ui/react';
-import { useApp } from '@/context/AppContext';
-
-const mockLoginRequest = () => {
-  return new Promise<void>((resolve, reject) => {
-    setTimeout(() => {
-      resolve();
-      reject();
-    }, 1000);
-  });
-};
+import { useLoginController } from './useLoginController';
 
 const Login: React.FC = () => {
-  const toast = useToast();
-  const { login } = useApp();
-
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!username || !password) return;
-
-    try {
-      setLoading(true);
-
-      await mockLoginRequest();
-
-      login(username);
-    } catch (error) {
-      console.log('Erro: ', error);
-      let message = 'Ocorreu um erro inesperado';
-
-      if (error instanceof Error) {
-        message = error.message;
-      }
-
-      toast({
-        title: 'Falha no login',
-        description: message,
-        status: 'error',
-        position: 'top-right',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const disableButton = !username || !password;
+  const controller = useLoginController();
 
   return (
     <Flex
@@ -71,38 +24,47 @@ const Login: React.FC = () => {
         <Box textAlign='center'>
           <Heading>Login</Heading>
         </Box>
+
         <Box
           my={4}
           textAlign='left'
         >
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={controller.handleSubmit}>
             <FormControl isRequired>
               <FormLabel>Usuário</FormLabel>
+
               <Input
-                placeholder='Digite seu usuário'
+                placeholder='Digite seu e-mail'
                 size='lg'
-                onChange={(event) => setUsername(event.currentTarget.value)}
+                onChange={(event) =>
+                  controller.setEmail(event.currentTarget.value)
+                }
               />
             </FormControl>
+
             <FormControl
               isRequired
               mt={6}
             >
               <FormLabel>Senha</FormLabel>
+
               <Input
                 type='password'
                 placeholder='Digite sua senha'
                 size='lg'
-                onChange={(event) => setPassword(event.currentTarget.value)}
+                onChange={(event) =>
+                  controller.setPassword(event.currentTarget.value)
+                }
               />
             </FormControl>
+
             <Button
               variant='outline'
               type='submit'
               width='full'
               mt={4}
-              disabled={disableButton}
-              isLoading={loading}
+              disabled={controller.disableButton}
+              isLoading={controller.loading}
             >
               Entrar
             </Button>

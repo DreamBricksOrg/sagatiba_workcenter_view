@@ -1,3 +1,4 @@
+import { IUser } from '@/types/IUser';
 import {
   createContext,
   useContext,
@@ -7,8 +8,8 @@ import {
 } from 'react';
 
 interface IAppContext {
-  user: string | null;
-  login: (username: string) => void;
+  user: IUser | null;
+  login: (user: IUser) => void;
   logout: () => void;
 }
 
@@ -21,11 +22,11 @@ const USER_KEY = 'username';
 const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export const AppProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
 
-  const login = (username: string) => {
-    setUser(username);
-    localStorage.setItem(USER_KEY, username);
+  const login = (user: IUser) => {
+    setUser(user);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
   };
 
   const logout = () => {
@@ -36,7 +37,7 @@ export const AppProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const session = localStorage.getItem(USER_KEY);
     if (session) {
-      setUser(session);
+      setUser(JSON.parse(session));
     }
   }, []);
 

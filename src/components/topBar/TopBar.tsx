@@ -15,7 +15,7 @@ const TopBar: React.FC = () => {
       pr={8}
     >
       <IoMdPerson color='#FFFFFF' />
-      <Text color='whiteAlpha.900'>{user}</Text>
+      <Text color='whiteAlpha.900'>{user?.email}</Text>
 
       <IconButton
         aria-label='logout'
