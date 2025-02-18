@@ -17,7 +17,10 @@ const Timer: React.FC<TimerProps> = ({
   disableRequestMoreTimeButton,
 }) => {
   const timerColor = totalSeconds > 30 ? 'blue.900' : 'red';
-  const text = `${minutes}:${seconds}`;
+
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(seconds).padStart(2, '0');
+  const text = `${formattedMinutes}:${formattedSeconds}`;
 
   return (
     <Box

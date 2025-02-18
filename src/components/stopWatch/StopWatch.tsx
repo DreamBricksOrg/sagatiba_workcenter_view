@@ -7,7 +7,10 @@ const StopWatch: React.FC = () => {
     autoStart: true,
   });
 
-  const text = `${minutes}:${seconds}`;
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(seconds).padStart(2, '0');
+  const text = `${formattedMinutes}:${formattedSeconds}`;
+
   const bg = totalSeconds < 30 ? 'blue.500' : 'red';
 
   return (

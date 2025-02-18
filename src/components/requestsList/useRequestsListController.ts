@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { IRequest } from '@/types/IRequest';
 import { useToast } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
-let socket;
 
+let socket: ReturnType<typeof io> | undefined;
 const NOTIFICATION_SOUND = new Audio('./sounds/notification_sound.wav');
 
 const copyToClipboard = async (lyrics: string): Promise<boolean> => {
@@ -119,8 +119,23 @@ export const useRequestsListController = () => {
       onConnection();
     });
 
-    socket.on('queue_list', (response) => {
+    socket.on('queue_list', (response: IRequest[]) => {
       console.log('queue_list', response);
+
+      const formattedRequests = response.map((request) => {
+        const pedido = request.id.split('-')[0];
+
+        const tituloMatch = request.lyrics.match(/\*\*Título:\s*(.*?)\*\*/);
+        const titulo = tituloMatch ? tituloMatch[1] : 'Sem título';
+
+        return {
+          ...request,
+          pedido,
+          titulo,
+        };
+      });
+
+      setRequests(formattedRequests);
     });
 
     socket.on('error_message', (response) => {

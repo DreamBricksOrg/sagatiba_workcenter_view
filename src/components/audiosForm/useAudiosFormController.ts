@@ -19,6 +19,11 @@ const mockSendResult = () => {
   });
 };
 
+const convertToCdnUrl = (originalUrl: string): string | null => {
+  const match = originalUrl.match(/suno\.com\/song\/([\w-]+)/);
+  return match ? `https://cdn1.suno.ai/${match[1]}.mp3` : null;
+};
+
 export const useAudiosFormController = ({
   pauseTimer,
   resumeTimer,
@@ -37,6 +42,21 @@ export const useAudiosFormController = ({
 
     if (!firstUrl.length || !secondUrl.length) return;
 
+    const convertedFirstUrl = convertToCdnUrl(firstUrl);
+    const convertedSecondUrl = convertToCdnUrl(secondUrl);
+
+    if (!convertedFirstUrl || !convertedSecondUrl) {
+      toast({
+        title: 'URL inválida',
+        description: 'Certifique-se de inserir URLs válidos do Suno.',
+        status: 'error',
+        variant: 'subtle',
+        position: 'top-right',
+        duration: 3000,
+      });
+      return;
+    }
+
     let toastTitle = 'Resultado enviado';
     let toastMessage = 'Chamado concluído com sucesso';
     let toastStatus: 'error' | 'success' = 'success';
@@ -45,7 +65,11 @@ export const useAudiosFormController = ({
       setLoading(true);
       pauseTimer();
 
-      // TODO - Requisição para enviar resultado
+      console.log('Enviando os seguintes links convertidos:');
+      console.log(`1º: ${convertedFirstUrl}`);
+      console.log(`2º: ${convertedSecondUrl}`);
+
+      // TODO - Requisição para enviar resultado usando os novos links
       await mockSendResult();
 
       onSubmitSuccess();

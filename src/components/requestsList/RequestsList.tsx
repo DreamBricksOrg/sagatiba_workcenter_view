@@ -17,8 +17,8 @@ const TableHeader: React.FC = () => {
   return (
     <Thead>
       <Tr>
-        <Th w='100px'>Pedido</Th>
-        <Th flex={1}>Título</Th>
+        <Th w='100px'>Pedido</Th> {/* Agora mostrando o número do pedido */}
+        <Th flex={1}>Título</Th> {/* Agora mostrando o título extraído */}
         <Th
           w='80px'
           p={0}
@@ -54,6 +54,8 @@ const RequestsList: React.FC = () => {
               <RequestRow
                 key={request.id}
                 request={request}
+                pedido={request.pedido} // Agora exibindo 'pedido'
+                titulo={request.titulo} // Agora exibindo 'titulo'
                 onAcceptClick={controller.handleAcceptClick}
                 disableAccept={!!controller.currentRequest}
               />

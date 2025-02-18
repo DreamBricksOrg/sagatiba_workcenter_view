@@ -5,23 +5,27 @@ import { IRequest } from '@/types/IRequest';
 
 interface RequestRowProps {
   request: IRequest;
+  pedido: string;
+  titulo: string;
   disableAccept: boolean;
   onAcceptClick: (request: IRequest) => void;
 }
 
 const RequestRow: React.FC<RequestRowProps> = ({
   request,
+  pedido,
+  titulo,
   disableAccept,
   onAcceptClick,
 }) => {
   return (
     <Tr>
-      <Td w='100px'>{request.id}</Td>
+      <Td w='100px'>{pedido}</Td> {/* Agora exibe o primeiro bloco do UUID */}
       <Td
         flex={1}
         isTruncated
       >
-        {request.title}
+        {titulo} {/* Agora exibe o título extraído da lyrics */}
       </Td>
       <Td
         w='80px'
@@ -34,7 +38,7 @@ const RequestRow: React.FC<RequestRowProps> = ({
           colorScheme='green'
           size='sm'
           onClick={() => onAcceptClick(request)}
-          aria-label={`Aceitar pedido ${request.title}`}
+          aria-label={`Aceitar pedido ${titulo}`}
           disabled={disableAccept}
         >
           Aceitar

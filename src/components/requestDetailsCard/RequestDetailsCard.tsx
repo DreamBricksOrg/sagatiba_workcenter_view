@@ -81,7 +81,13 @@ const RequestDetailsCard: React.FC<Props> = ({ request }) => {
           mt={2}
         >
           <Box borderRadius={4}>
-            <Text textAlign='center'>{request.lyrics}</Text>
+            <Text
+              as='pre'
+              whiteSpace='pre-wrap'
+              textAlign='center'
+            >
+              {request.lyrics}
+            </Text>
           </Box>
         </CardBody>
       </Card>
