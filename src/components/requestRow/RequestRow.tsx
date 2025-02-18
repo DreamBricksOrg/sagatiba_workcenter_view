@@ -1,48 +1,34 @@
 import React from 'react';
-import { Td, Tr, Button } from '@chakra-ui/react';
+import { Td, Tr } from '@chakra-ui/react';
 import StopWatch from '../stopWatch/StopWatch';
 import { IRequest } from '@/types/IRequest';
 
 interface RequestRowProps {
   request: IRequest;
-  pedido: string;
-  titulo: string;
-  disableAccept: boolean;
-  onAcceptClick: (request: IRequest) => void;
 }
 
-const RequestRow: React.FC<RequestRowProps> = ({
-  request,
-  pedido,
-  titulo,
-  disableAccept,
-  onAcceptClick,
-}) => {
+const formatTitle = (lyrics: string) => {
+  const tituloMatch = lyrics.match(/\*\*Título:\s*(.*?)\*\*/);
+  return tituloMatch ? tituloMatch[1] : 'Sem título';
+};
+
+const RequestRow: React.FC<RequestRowProps> = ({ request }) => {
   return (
     <Tr>
-      <Td w='100px'>{pedido}</Td> {/* Agora exibe o primeiro bloco do UUID */}
+      <Td w='100px'>{request.id.split('-')[0]}</Td>
+
       <Td
         flex={1}
         isTruncated
       >
-        {titulo} {/* Agora exibe o título extraído da lyrics */}
+        {formatTitle(request.lyrics)}
       </Td>
+
       <Td
         w='80px'
         p={2}
       >
         <StopWatch />
-      </Td>
-      <Td w='120px'>
-        <Button
-          colorScheme='green'
-          size='sm'
-          onClick={() => onAcceptClick(request)}
-          aria-label={`Aceitar pedido ${titulo}`}
-          disabled={disableAccept}
-        >
-          Aceitar
-        </Button>
       </Td>
     </Tr>
   );

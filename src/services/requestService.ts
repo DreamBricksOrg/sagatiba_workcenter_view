@@ -1,40 +1,32 @@
 import api from '@/api';
+import { IRequest } from '@/types/IRequest';
+
+type IProcessTaskResponse = {
+  status: string;
+  task: IRequest;
+};
+
+type IFailTaskBody = {
+  id: string;
+  phone: string;
+  lyrics: string;
+  user_oid: string;
+};
 
 export default class RequestService {
-  static processTask = async () => {
-    try {
-      const response = await api.post('/tasks/process');
-      if (response.status === 200) {
-        console.log(response.data);
-        return response.data;
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  static acceptRequest = async (): Promise<IProcessTaskResponse> => {
+    const response = await api.post<IProcessTaskResponse>('/tasks/process');
+    return response.data;
   };
 
-  task_completed = async (success: boolean, task_id: string) => {
-    try {
-      const response = await api.post('/tasks/completed', {
-        task_id,
-        success,
-      });
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  static async taskCompleted(success: boolean, id: string): Promise<void> {
+    return await api.post('/tasks/complete', {
+      id,
+      success,
+    });
+  }
 
-  requeue_task = async (task_id: string) => {
-    try {
-      const response = await api.post('/tasks/requeue', { task_id });
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  static async taskFail(body: IFailTaskBody): Promise<void> {
+    return await api.post('/tasks/fail', body);
+  }
 }

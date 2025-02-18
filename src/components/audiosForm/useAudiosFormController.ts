@@ -1,23 +1,15 @@
 import { useApp } from '@/context/AppContext';
+import AudioService from '@/services/AudioService';
+import RequestService from '@/services/RequestService';
+import { IRequest } from '@/types/IRequest';
 import { useToast } from '@chakra-ui/react';
 import { FormEvent, useState } from 'react';
 
 type Props = {
+  request: IRequest;
   pauseTimer: () => void;
   resumeTimer: () => void;
   onSubmitSuccess: () => void;
-};
-
-const mockSendResult = () => {
-  return new Promise<void>((resolve, reject) => {
-    setTimeout(() => {
-      const success = Math.random() < 0.5;
-
-      if (success) resolve();
-
-      reject();
-    }, 5000);
-  });
 };
 
 const convertToCdnUrl = (originalUrl: string): string | null => {
@@ -26,6 +18,7 @@ const convertToCdnUrl = (originalUrl: string): string | null => {
 };
 
 export const useAudiosFormController = ({
+  request,
   pauseTimer,
   resumeTimer,
   onSubmitSuccess,
@@ -68,15 +61,20 @@ export const useAudiosFormController = ({
       setLoading(true);
       pauseTimer();
 
-      console.log('Enviando os seguintes links convertidos:');
-      console.log(`1º: ${convertedFirstUrl}`);
-      console.log(`2º: ${convertedSecondUrl}`);
+      await AudioService.saveGeneratedAudioFromUrl({
+        user_oid: user?.id ?? '',
+        audio_url1: convertedFirstUrl,
+        audio_url2: convertedSecondUrl,
+        id: request.id,
+        lyrics: request.lyrics,
+        phone: request.phone,
+      });
 
-      // TODO - Requisição para enviar resultado usando os novos links
-      // await mockSendResult();
+      await RequestService.taskCompleted(true, request.id);
 
       onSubmitSuccess();
     } catch (error) {
+      console.log(error);
       let errorMessage = 'ocorreu uma falha inesperada';
 
       if (error instanceof Error) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { IRequest } from '@/types/IRequest';
 import { useToast } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
-import RequestService from '@/services/requestService';
+import RequestService from '@/services/RequestService';
 
 let socket: ReturnType<typeof io> | undefined;
 const NOTIFICATION_SOUND = new Audio('./sounds/notification_sound.wav');
@@ -16,53 +16,17 @@ const copyToClipboard = async (lyrics: string): Promise<boolean> => {
   }
 };
 
-const mockAcceptRequest = async () => {
-  return new Promise<void>((resolve, reject) => {
-    setTimeout(() => {
-      const success = Math.random() < 0.5;
-
-      if (success) resolve();
-
-      reject();
-    }, 1000);
-  });
-};
-
 export const useRequestsListController = () => {
   const toast = useToast();
   const [requests, setRequests] = useState<IRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentRequest, setCurrentRequest] = useState<IRequest | null>(null);
 
-  const processLine = async () => {
-    try {
-      const response = await RequestService.processTask();
-      if (response.status === 'success') {
-        return response;
-      } else {
-        toast({
-          title: 'Erro ao processar',
-          status: 'error',
-          variant: 'subtle',
-          position: 'top-right',
-          duration: 3000,
-        });
-        return null;
-      }
-    } catch (error) {
-      console.error('Erro ao processar a linha:', error);
-      toast({
-        title: 'Erro ao processar',
-        status: 'error',
-        variant: 'subtle',
-        position: 'top-right',
-        duration: 3000,
-      });
-      return null;
-    }
-  };
+  const handleAcceptClick = async () => {
+    if (!requests.length) return;
 
-  const handleAcceptClick = async (request: IRequest) => {
+    const request = requests[0];
+
     let toastTitle = 'Pedido aceito';
     let toastMessage = 'A letra foi copiada para área de transferência';
     let toastStatus: 'error' | 'success' = 'success';
@@ -70,13 +34,9 @@ export const useRequestsListController = () => {
     try {
       setLoading(true);
 
-      // Aguarda a execução de processLine e verifica se foi bem-sucedida
-      const response = await processLine();
-      if (!response) {
-        throw new Error('ProcessLine falhou');
-      }
+      const response = await RequestService.acceptRequest();
 
-      setCurrentRequest(request);
+      setCurrentRequest(response.task);
 
       const copySuccess = await copyToClipboard(request.lyrics);
 
@@ -101,73 +61,25 @@ export const useRequestsListController = () => {
     }
   };
 
-  // const mockNewRequestEvents = () => {
-  //   intervalRef.current = setInterval(() => {
-  //     const newRequest =
-  //       requestsListMock[Math.floor(Math.random() * requestsListMock.length)];
-
-  //     setRequests((oldState) => {
-  //       if (oldState.some((request) => request.id === newRequest.id)) {
-  //         return oldState; // Retorna o estado anterior se o pedido já existir
-  //       }
-
-  //       return [...oldState, newRequest];
-  //     });
-
-  //     if (!currentRequest) {
-  //       NOTIFICATION_SOUND.play();
-  //     }
-  //   }, 30 * 1000);
-  // };
-
-  const handleCloseRequest = (requestId: IRequest['id']) => {
-    setRequests((oldState) =>
-      oldState.filter((request) => request.id !== requestId)
-    );
+  const handleCloseRequest = () => {
     setCurrentRequest(null);
   };
 
   const onConnection = () => {
-    console.log('onConnection');
     socket.emit('get_queue');
   };
-
-  // MOCK PARA GERAR PEDIDOS
-  // useEffect(() => {
-  //   mockNewRequestEvents();
-
-  //   return () => {
-  //     if (intervalRef.current) {
-  //       clearInterval(intervalRef.current);
-  //     }
-  //   };
-  // }, [currentRequest]);
 
   useEffect(() => {
     socket = io('ws://18.229.132.107:5001');
 
     socket.on('connect', () => {
-      console.log(socket.connected);
       onConnection();
     });
 
     socket.on('queue_list', (response: IRequest[]) => {
-      console.log('queue_list', response);
-
-      const formattedRequests = response.map((request) => {
-        const pedido = request.id.split('-')[0];
-
-        const tituloMatch = request.lyrics.match(/\*\*Título:\s*(.*?)\*\*/);
-        const titulo = tituloMatch ? tituloMatch[1] : 'Sem título';
-
-        return {
-          ...request,
-          pedido,
-          titulo,
-        };
-      });
-
-      setRequests(formattedRequests);
+      console.log('queue_list quantity:', response.length);
+      NOTIFICATION_SOUND.play();
+      setRequests(response);
     });
 
     socket.on('error_message', (response) => {

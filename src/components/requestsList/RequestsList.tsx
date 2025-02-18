@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Button,
   Flex,
   Table,
   TableContainer,
@@ -17,8 +18,8 @@ const TableHeader: React.FC = () => {
   return (
     <Thead>
       <Tr>
-        <Th w='100px'>Pedido</Th> {/* Agora mostrando o número do pedido */}
-        <Th flex={1}>Título</Th> {/* Agora mostrando o título extraído */}
+        <Th w='100px'>Pedido</Th>
+        <Th flex={1}>Título</Th>
         <Th
           w='80px'
           p={0}
@@ -26,7 +27,6 @@ const TableHeader: React.FC = () => {
         >
           Timer
         </Th>
-        <Th w='120px'>Aceitar</Th>
       </Tr>
     </Thead>
   );
@@ -39,8 +39,20 @@ const RequestsList: React.FC = () => {
     <Flex
       flex={1}
       justifyContent='center'
+      direction='column'
       p={8}
     >
+      <Button
+        colorScheme='green'
+        onClick={() => controller.handleAcceptClick()}
+        aria-label={`Aceitar pedido`}
+        disabled={false}
+        alignSelf='flex-end'
+        size='md'
+      >
+        Aceitar tarefa
+      </Button>
+
       <TableContainer w='100%'>
         <Table
           variant='striped'
@@ -54,10 +66,6 @@ const RequestsList: React.FC = () => {
               <RequestRow
                 key={request.id}
                 request={request}
-                pedido={request.pedido} // Agora exibindo 'pedido'
-                titulo={request.titulo} // Agora exibindo 'titulo'
-                onAcceptClick={controller.handleAcceptClick}
-                disableAccept={!!controller.currentRequest}
               />
             ))}
           </Tbody>

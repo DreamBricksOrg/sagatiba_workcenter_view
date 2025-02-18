@@ -10,16 +10,7 @@ export type IAudioRequest = {
 };
 
 export default class AudioService {
-  static save_generated_audio_from_url = async (audio: IAudioRequest) => {
-    try {
-      const response = await api.post('/audios/save_url', {
-        audio,
-      });
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  static async saveGeneratedAudioFromUrl(audio: IAudioRequest): Promise<void> {
+    return api.post('/audios/save_url', audio);
+  }
 }

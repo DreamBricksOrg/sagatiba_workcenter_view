@@ -16,7 +16,7 @@ import RequestDetailsCard from '../requestDetailsCard/RequestDetailsCard';
 
 type Props = {
   request: IRequest;
-  onRequestEnd: (requestId: IRequest['id']) => void;
+  onRequestEnd: () => void;
 };
 
 const AnswerRequestFomModal: React.FC<Props> = (props) => {
@@ -38,9 +38,10 @@ const AnswerRequestFomModal: React.FC<Props> = (props) => {
           <RequestDetailsCard request={controller.request} />
 
           <AudiosForm
+            request={controller.request}
             pauseTimer={controller.timerData.pause}
             resumeTimer={controller.timerData.handleMoreTime}
-            onSubmitSuccess={() => props.onRequestEnd(props.request.id)}
+            onSubmitSuccess={props.onRequestEnd}
           />
         </ModalBody>
 

@@ -1,8 +1,10 @@
 import { FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
 import React from 'react';
 import { useAudiosFormController } from './useAudiosFormController';
+import { IRequest } from '@/types/IRequest';
 
 type Props = {
+  request: IRequest;
   pauseTimer: () => void;
   resumeTimer: () => void;
   onSubmitSuccess: () => void;
