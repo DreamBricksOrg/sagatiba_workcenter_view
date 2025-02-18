@@ -1,3 +1,4 @@
+import { useApp } from '@/context/AppContext';
 import { useToast } from '@chakra-ui/react';
 import { FormEvent, useState } from 'react';
 
@@ -37,6 +38,8 @@ export const useAudiosFormController = ({
 
   const disableSubmit = !firstUrl.length || !secondUrl.length;
 
+  const { user } = useApp();
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -70,7 +73,7 @@ export const useAudiosFormController = ({
       console.log(`2º: ${convertedSecondUrl}`);
 
       // TODO - Requisição para enviar resultado usando os novos links
-      await mockSendResult();
+      // await mockSendResult();
 
       onSubmitSuccess();
     } catch (error) {

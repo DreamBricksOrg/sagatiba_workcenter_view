@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { IRequest } from '@/types/IRequest';
 import { useToast } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
+import RequestService from '@/services/requestService';
 
 let socket: ReturnType<typeof io> | undefined;
 const NOTIFICATION_SOUND = new Audio('./sounds/notification_sound.wav');
@@ -33,6 +34,34 @@ export const useRequestsListController = () => {
   const [loading, setLoading] = useState(false);
   const [currentRequest, setCurrentRequest] = useState<IRequest | null>(null);
 
+  const processLine = async () => {
+    try {
+      const response = await RequestService.processTask();
+      if (response.status === 'success') {
+        return response;
+      } else {
+        toast({
+          title: 'Erro ao processar',
+          status: 'error',
+          variant: 'subtle',
+          position: 'top-right',
+          duration: 3000,
+        });
+        return null;
+      }
+    } catch (error) {
+      console.error('Erro ao processar a linha:', error);
+      toast({
+        title: 'Erro ao processar',
+        status: 'error',
+        variant: 'subtle',
+        position: 'top-right',
+        duration: 3000,
+      });
+      return null;
+    }
+  };
+
   const handleAcceptClick = async (request: IRequest) => {
     let toastTitle = 'Pedido aceito';
     let toastMessage = 'A letra foi copiada para área de transferência';
@@ -41,8 +70,11 @@ export const useRequestsListController = () => {
     try {
       setLoading(true);
 
-      // TODO - Implementar request para aceitar
-      await mockAcceptRequest();
+      // Aguarda a execução de processLine e verifica se foi bem-sucedida
+      const response = await processLine();
+      if (!response) {
+        throw new Error('ProcessLine falhou');
+      }
 
       setCurrentRequest(request);
 
