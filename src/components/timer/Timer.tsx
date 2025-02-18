@@ -1,54 +1,23 @@
+import React from 'react';
 import { Box, Button, Text } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { useTimer } from 'react-timer-hook';
 
-type Prop = {
-  expiryTimestamp?: Date;
-  onExpireCb?: () => void;
+type TimerProps = {
+  totalSeconds: number;
+  minutes: number;
+  seconds: number;
+  handleMoreTime: () => void;
+  disableRequestMoreTimeButton: boolean;
 };
 
-const warningAudio = new Audio('./sounds/time_ending_sound.wav');
-const MORE_TIME_REQUESTS_LIMIT = 6;
-
-const Timer: React.FC<Prop> = ({ expiryTimestamp, onExpireCb }) => {
-  const [requestMoreTimeCount, setRequestMoreTimeCount] = useState(0);
-
-  const disableRequestMoreTimeButton =
-    requestMoreTimeCount >= MORE_TIME_REQUESTS_LIMIT;
-
-  if (!expiryTimestamp) {
-    const timerLimit = new Date();
-    timerLimit.setSeconds(timerLimit.getSeconds() + 90); // 1m30s timer
-    expiryTimestamp = timerLimit;
-  }
-
-  const { totalSeconds, seconds, minutes, restart } = useTimer({
-    expiryTimestamp,
-    onExpire: () => {
-      if (onExpireCb) {
-        onExpireCb();
-      }
-    },
-  });
-
-  const handleMoreTime = () => {
-    if (disableRequestMoreTimeButton) return;
-
-    const time = new Date();
-    time.setSeconds(time.getSeconds() + totalSeconds + 30);
-    restart(time);
-    warningAudio.pause();
-    warningAudio.currentTime = 0;
-
-    setRequestMoreTimeCount((value) => value + 1);
-  };
-
+const Timer: React.FC<TimerProps> = ({
+  totalSeconds,
+  minutes,
+  seconds,
+  handleMoreTime,
+  disableRequestMoreTimeButton,
+}) => {
   const timerColor = totalSeconds > 30 ? 'blue.900' : 'red';
   const text = `${minutes}:${seconds}`;
-
-  if (totalSeconds === 10) {
-    warningAudio.play();
-  }
 
   return (
     <Box
