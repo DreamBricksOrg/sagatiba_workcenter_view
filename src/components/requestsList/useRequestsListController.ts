@@ -72,7 +72,7 @@ export const useRequestsListController = () => {
   };
 
   useEffect(() => {
-    socket = io('ws://18.229.132.107:5001');
+    socket = io('wss://sagatibamusicapi.zapto.org:5001');
 
     socket.on('connect', () => {
       onConnection();
