@@ -1,5 +1,5 @@
 import { useApp } from '@/context/AppContext';
-import LoginService from '@/services/LoginService';
+import LoginService from '@/services/loginService';
 import { useToast } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
