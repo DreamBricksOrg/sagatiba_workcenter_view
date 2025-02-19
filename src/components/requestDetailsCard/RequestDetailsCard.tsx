@@ -94,5 +94,4 @@ const RequestDetailsCard: React.FC<Props> = ({ request }) => {
     </>
   );
 };
-
 export default RequestDetailsCard;

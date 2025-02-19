@@ -1,6 +1,6 @@
 import { useApp } from '@/context/AppContext';
-import AudioService from '@/services/AudioService';
-import RequestService from '@/services/RequestService';
+import AudioService from '@/services/audioService';
+import RequestService from '@/services/requestService';
 import { IRequest } from '@/types/IRequest';
 import { useToast } from '@chakra-ui/react';
 import { FormEvent, useState } from 'react';
