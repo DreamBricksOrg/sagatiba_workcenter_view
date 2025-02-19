@@ -1,7 +1,7 @@
 import { useDisclosure, useToast } from '@chakra-ui/react';
 import { IRequest } from '@/types/IRequest';
 import { useFormTimerController } from '../timer/useFormTimerController';
-import RequestService from '@/services/RequestService';
+import RequestService from '@/services/requestService';
 import { useApp } from '@/context/AppContext';
 
 type Props = {
