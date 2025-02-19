@@ -38,7 +38,6 @@ const RequestsList: React.FC = () => {
   return (
     <Flex
       flex={1}
-      justifyContent='center'
       direction='column'
       p={8}
     >
@@ -46,7 +45,7 @@ const RequestsList: React.FC = () => {
         colorScheme='green'
         onClick={() => controller.handleAcceptClick()}
         aria-label={`Aceitar pedido`}
-        disabled={false}
+        disabled={!!controller.currentRequest || !controller.requests.length}
         alignSelf='flex-end'
         size='md'
       >
