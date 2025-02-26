@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { IRequest } from '@/types/IRequest';
 import { useToast } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
-import RequestService from '@/services/requestService';
+import RequestService from '@/services/RequestService';
 
 let socket: ReturnType<typeof io> | undefined;
 const NOTIFICATION_SOUND = new Audio('./sounds/notification_sound.wav');
@@ -82,9 +82,13 @@ export const useRequestsListController = () => {
     });
 
     socket.on('queue_list', (response: IRequest[]) => {
-      console.log('queue_list quantity:', response.length);
-      NOTIFICATION_SOUND.play();
-      setRequests(response);
+      setRequests((oldRequests) => {
+        if (response.length && response.length > oldRequests.length) {
+          NOTIFICATION_SOUND.play();
+        }
+
+        return response;
+      });
     });
 
     socket.on('error_message', (response) => {
