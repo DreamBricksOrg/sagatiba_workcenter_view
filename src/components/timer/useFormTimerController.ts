@@ -15,7 +15,7 @@ export const useFormTimerController = ({ onExpireCb }: Props) => {
     requestMoreTimeCount >= MORE_TIME_REQUESTS_LIMIT;
 
   const timerLimit = new Date();
-  timerLimit.setSeconds(timerLimit.getSeconds() + 90); // 1m30s timer
+  timerLimit.setSeconds(timerLimit.getSeconds() + 300); // 1m30s timer
 
   const { totalSeconds, seconds, minutes, restart, pause } = useTimer({
     expiryTimestamp: timerLimit,
