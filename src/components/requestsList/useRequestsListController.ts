@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { IRequest } from '@/types/IRequest';
 import { useToast } from '@chakra-ui/react';
 import { io } from 'socket.io-client';
-import RequestService from '@/services/RequestService';
+import RequestService from '@/services/requestService';
 
 let socket: ReturnType<typeof io> | undefined;
 const NOTIFICATION_SOUND = new Audio('./sounds/notification_sound.wav');
