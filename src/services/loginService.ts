@@ -10,7 +10,7 @@ export type IUserSignIn = {
 export default class LoginService {
   static async signIn(user: IUserSignIn): Promise<IUser> {
     const response = await api.post<{ message: string; token: string }>(
-      '/users/login',
+      '/users/worker/login',
       {
         email: user.email,
         password: user.password,
