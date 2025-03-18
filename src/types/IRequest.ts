@@ -3,4 +3,5 @@ export interface IRequest {
   lyrics: string;
   phone: string;
   title: string;
+  lyrics_oid: string;
 }

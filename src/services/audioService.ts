@@ -1,10 +1,9 @@
 import api from '@/api';
 
 export type IAudioRequest = {
-  user_oid: string;
+  worker_oid: string;
   id: string;
-  phone: string;
-  lyrics: string;
+  lyrics_oid: string;
   audio_url1: string;
   audio_url2: string;
 };

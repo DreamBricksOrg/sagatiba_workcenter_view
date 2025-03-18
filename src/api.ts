@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://sagatibamusicapi.zapto.org/api',
+  baseURL: 'http://18.229.132.107:5001/api',
 });
 
 export default api;

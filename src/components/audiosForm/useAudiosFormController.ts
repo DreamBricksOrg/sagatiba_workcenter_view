@@ -62,12 +62,11 @@ export const useAudiosFormController = ({
       pauseTimer();
 
       await AudioService.saveGeneratedAudioFromUrl({
-        user_oid: user?.id ?? '',
+        worker_oid: user?.id ?? '',
         audio_url1: convertedFirstUrl,
         audio_url2: convertedSecondUrl,
         id: request.id,
-        lyrics: request.lyrics,
-        phone: request.phone,
+        lyrics_oid: request.lyrics_oid,
       });
 
       await RequestService.taskCompleted(true, request.id);
