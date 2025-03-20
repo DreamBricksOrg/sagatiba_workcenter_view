@@ -6,6 +6,7 @@ export type IAudioRequest = {
   lyrics_oid: string;
   audio_url1: string;
   audio_url2: string;
+  phone: string;
 };
 
 export default class AudioService {

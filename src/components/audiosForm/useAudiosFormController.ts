@@ -67,6 +67,7 @@ export const useAudiosFormController = ({
         audio_url2: convertedSecondUrl,
         id: request.id,
         lyrics_oid: request.lyrics_oid,
+        phone: request.phone,
       });
 
       await RequestService.taskCompleted(true, request.id);
