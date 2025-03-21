@@ -72,7 +72,7 @@ export const useRequestsListController = () => {
   };
 
   useEffect(() => {
-    socket = io('wss://sagatibamusicapi.zapto.org:5001', {
+    socket = io('wss://sagatibamusicapi.zapto.org', {
       transports: ['websocket'],
       secure: true,
     });
