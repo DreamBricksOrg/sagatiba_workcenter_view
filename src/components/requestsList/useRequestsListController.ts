@@ -1,11 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { IRequest } from '@/types/IRequest';
 import { useToast } from '@chakra-ui/react';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import RequestService from '@/services/requestService';
 
-let socket: ReturnType<typeof io> | undefined;
 const NOTIFICATION_SOUND = new Audio('./sounds/notification_sound.wav');
+
+const WS_BASE_URL =
+  typeof window !== 'undefined'
+    ? window.location.hostname.includes('localhost')
+      ? 'ws://localhost:5001'
+      : 'wss://sagatibamusicapi.zapto.org'
+    : 'wss://sagatibamusicapi.zapto.org';
+
 
 const copyToClipboard = async (lyrics: string): Promise<boolean> => {
   try {
@@ -21,6 +28,7 @@ export const useRequestsListController = () => {
   const [requests, setRequests] = useState<IRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentRequest, setCurrentRequest] = useState<IRequest | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   const handleAcceptClick = async () => {
     if (!requests.length) return;
@@ -33,13 +41,10 @@ export const useRequestsListController = () => {
 
     try {
       setLoading(true);
-
       const response = await RequestService.acceptRequest();
-
       setCurrentRequest(response.task);
 
       const copySuccess = await copyToClipboard(request.lyrics);
-
       if (!copySuccess) {
         toastMessage = 'Não foi possível copiar a letra';
       }
@@ -66,24 +71,32 @@ export const useRequestsListController = () => {
   };
 
   const onConnection = () => {
-    if (socket) {
-      socket.emit('get_queue');
-    }
+    socketRef.current?.emit('get_queue');
   };
 
   useEffect(() => {
-    socket = io('wss://sagatibamusicapi.zapto.org', {
+    const socket = io(WS_BASE_URL, {
       transports: ['websocket'],
       secure: true,
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 3000,
     });
 
+    socketRef.current = socket;
+
     socket.on('connect', () => {
+      console.log('WebSocket conectado');
       onConnection();
     });
 
     socket.on('queue_list', (response: IRequest[]) => {
       setRequests((oldRequests) => {
-        if (response.length && response.length > oldRequests.length) {
+        const newRequestIds = new Set(response.map((r) => r.id));
+        const oldRequestIds = new Set(oldRequests.map((r) => r.id));
+
+        const isNew = [...newRequestIds].some((id) => !oldRequestIds.has(id));
+        if (isNew) {
           NOTIFICATION_SOUND.play();
         }
 
@@ -92,21 +105,23 @@ export const useRequestsListController = () => {
     });
 
     socket.on('error_message', (response) => {
-      console.log('error_message', response);
+      console.error('error_message', response);
     });
 
     socket.on('error', (error) => {
-      console.log('error', error);
+      console.error('WebSocket error', error);
     });
 
-    socket.on('disconnect', () => {
-      console.log('disconnect');
+    socket.on('disconnect', (reason) => {
+      console.warn('WebSocket desconectado:', reason);
+    });
+
+    socket.on('connect_error', (error) => {
+      console.error('Erro na conexão WebSocket:', error);
     });
 
     return () => {
-      if (socket) {
-        socket.disconnect();
-      }
+      socket.disconnect();
     };
   }, []);
 
