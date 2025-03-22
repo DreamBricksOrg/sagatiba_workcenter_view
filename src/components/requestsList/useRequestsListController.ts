@@ -10,8 +10,8 @@ const WS_BASE_URL =
   typeof window !== 'undefined'
     ? window.location.hostname.includes('localhost')
       ? 'ws://localhost:5001'
-      : 'wss://sagatibamusicapi.zapto.org:5001'
-    : 'wss://sagatibamusicapi.zapto.org:5001';
+      : 'wss://sagatibamusicapi.zapto.org'
+    : 'wss://sagatibamusicapi.zapto.org';
 
 const copyToClipboard = async (lyrics: string): Promise<boolean> => {
   try {
