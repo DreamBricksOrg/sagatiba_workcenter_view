@@ -53,7 +53,7 @@ export const useAnswerRequestFormModalController = ({
     try {
       await RequestService.taskFail({
         id: request.id,
-        user_oid: user?.id ?? '',
+        worker_oid: user?.id ?? '',
         lyrics: request.lyrics,
         phone: request.phone,
       });

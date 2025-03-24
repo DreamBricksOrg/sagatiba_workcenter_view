@@ -10,7 +10,7 @@ type IFailTaskBody = {
   id: string;
   phone: string;
   lyrics: string;
-  user_oid: string;
+  worker_oid: string;
 };
 
 export default class RequestService {
