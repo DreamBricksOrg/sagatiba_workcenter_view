@@ -78,7 +78,7 @@ export const useRequestsListController = () => {
       transports: ['websocket'],
       secure: true,
       reconnection: true,
-      reconnectionAttempts: 10,
+      reconnectionAttempts: 20,
       reconnectionDelay: 3000,
     });
 
@@ -119,7 +119,16 @@ export const useRequestsListController = () => {
       console.error('Erro na conexão WebSocket:', error);
     });
 
+    const reconnectInterval = setInterval(() => {
+      if (socket.connected) {
+        console.log('Forçando reconexão do WebSocket...');
+        socket.disconnect();
+        socket.connect();
+      }
+    }, 25000);
+
     return () => {
+      clearInterval(reconnectInterval);
       socket.disconnect();
     };
   }, []);
