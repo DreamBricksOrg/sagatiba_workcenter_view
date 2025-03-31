@@ -9,7 +9,7 @@ type IProcessTaskResponse = {
 type IFailTaskBody = {
   id: string;
   phone: string;
-  lyrics: string;
+  lyrics_oid: string;
   worker_oid: string;
 };
 
